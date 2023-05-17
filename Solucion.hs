@@ -1,6 +1,5 @@
 module Solucion where
--- Completar con los datos del grupo
---
+
 -- Nombre de Grupo: Haskelleros
 -- Integrante 1: Ignacio Fullin, nacho.m.fullin@gmail.com, 1718/21
 -- Integrante 2: Joel Mastroiaco, joelmastroiaco@gmail.com, 1075/22
