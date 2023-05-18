@@ -4,7 +4,7 @@ module Solucion where
 -- Integrante 1: Ignacio Fullin, nacho.m.fullin@gmail.com, 1718/21
 -- Integrante 2: Joel Mastroiaco, joelmastroiaco@gmail.com, 1075/22
 -- Integrante 3: Paulo Accardo, paulo.matias.accardo@gmail.com, 836/22
--- Integrante 4: decidio no continuar con el tp
+-- Integrante 4: Decidio no continuar con el tp
 
 type Usuario = (Integer, String) -- (id, nombre)
 type Relacion = (Usuario, Usuario) -- usuarios que se relacionan
@@ -137,21 +137,25 @@ esFiel (x:xs) n | leGustaLaPublicacionA x n == True = esFiel xs n
 existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
 existeSecuenciaDeAmigos rs us1 us2 = verificador rs us2 (amigosDe rs us1) [us1]
 
+-- Dado un usario y una lista de usuarios, primero chequea si el usuario pertenece a la lista o si la lista de amigos es vacia (implicando que ya fue chequeada), sino llama a las auxiliares para probbar con los amigos de amigos.
 verificador :: RedSocial -> Usuario -> [Usuario] -> [Usuario] -> Bool
 verificador rs us2 as lista | pertenece us2 as = True
                             | listaVerificada as lista == [] = False
                             | otherwise = verificador rs us2 (amigosDeAmigos rs as) (lista ++ listaVerificada as lista)
 
+-- Dada una red social y una lista de usuarios, devuelve una lista con todos los amigos de cada uno de esos usuario.
 amigosDeAmigos :: RedSocial -> [Usuario] -> [Usuario]
 amigosDeAmigos _ [] = []
 amigosDeAmigos rs (x:xs) | xs == [] = amigosDe rs x
-                      | otherwise = (amigosDe rs x) ++ (amigosDeAmigos rs xs)
+                         | otherwise = (amigosDe rs x) ++ (amigosDeAmigos rs xs)
 
+-- Toma un usuario y una lsita de usuarios para chequear si el usuario pertenece a la lista.
 pertenece :: Usuario -> [Usuario] -> Bool
 pertenece us [] = False
 pertenece us (x:xs) | x == us = True
                     | otherwise = pertenece us xs
 
+-- Recibe dos listas de usuarios, chequea si los elementos de la primera estan en la segunda, y devuelve la primera menos los elementos de la segunda.
 listaVerificada :: [Usuario] -> [Usuario] -> [Usuario]
 listaVerificada [] ys = []
 listaVerificada (x:xs) ys | pertenece x ys = listaVerificada xs ys

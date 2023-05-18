@@ -4,7 +4,7 @@ import Solucion
 
 main = runTestTT todosLosTest
 
-todosLosTest = test [testsuite1, testsuite2, testsuite3, testsuite4, testsuite5, testsuite6, testsuite7, testsuite8, testsuite9]
+todosLosTest = test [testsuite1, testsuite2, testsuite3, testsuite4, testsuite5, testsuite6, testsuite7, testsuite8, testsuite9, testsuite10]
 
 -------------- test nombres de usuarios ------------------------
 testsuite1 = test [
@@ -75,10 +75,14 @@ testsuite9 = test [
     "testTieneUnSeguidorFiel 6" ~: (tieneUnSeguidorFiel redSeguidoresFieles usuario1) ~?= True, --red social con varias publicaciones del usuario y mas de un seguidor fiel
     "testTieneUnSeguidorFiel 7" ~: (tieneUnSeguidorFiel redA usuario3) ~?= False --red social sin seguidor fiel
  ]
- -------------- test tieneUnSeguidorFiel ------------------------
-ayuda = runTestTT testsuite10
+ -------------- test existeSecuenciaDeAmigos ------------------------
+
 testsuite10 = test [
-    "test1"  ~: (existeSecuenciaDeAmigos redB usuario1 usuario3) ~?= True
+    "testExisteSecuenciaDeAmigos 1"  ~: (existeSecuenciaDeAmigos ([usuario1,usuario2],[],[]) usuario1 usuario3) ~?= False, --red social sin relaciones
+    "testExisteSecuenciaDeAmigos 2"  ~: (existeSecuenciaDeAmigos redB usuario1 usuario3) ~?= True, -- red social con cadena 1 amigo
+    "testExisteSecuenciaDeAmigos 3"  ~: (existeSecuenciaDeAmigos redA usuario2 usuario3) ~?= True, -- usuario2 y usuario3 son amigos directos
+    "testExisteSecuenciaDeAmigos 4"  ~: (existeSecuenciaDeAmigos redSinCadenaDeAmigos usuario1 usuario4) ~?= False, -- red social sin cadena de amigos
+    "testExisteSecuenciaDeAmigos 5"  ~: (existeSecuenciaDeAmigos redCadenaCompleja usuario1 usuario5) ~?= True -- red social con cadena de mas de un amigo
  ]
 
 expectAny actual expected = elem actual expected ~? ("expected any of: " ++ show expected ++ "\n but got: " ++ show actual)
@@ -145,3 +149,5 @@ redMismaCantPublicacionesLikeadas = (usuariosB, relacionesB, [publicacion1_3, pu
 redSinLikes = (usuariosA, [], [publicacion1_4, publicacion3_1, publicacion4_2])
 redUnaPublicacionUnLike = (usuariosB, relacionesB, [publicacion1_3, publicacion1_4, publicacion1_5, publicacion3_2])
 redSeguidoresFieles = (usuariosA, relacionesA, [publicacion1_1, (usuario1, "Este es mi tercer post", [usuario2, usuario4]), (usuario1, "Este es mi segundo post", [usuario4,usuario2])])
+redSinCadenaDeAmigos = (usuariosA, [relacion1_2, relacion3_4], [])
+redCadenaCompleja = ([usuario1, usuario2, usuario3, usuario4, usuario5, usuario6], [relacion1_2, relacion2_3, relacion2_4, relacion3_4, (usuario4, usuario5), (usuario1, usuario6)], [])
