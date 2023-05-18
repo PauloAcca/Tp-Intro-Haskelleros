@@ -75,7 +75,11 @@ testsuite9 = test [
     "testTieneUnSeguidorFiel 6" ~: (tieneUnSeguidorFiel redSeguidoresFieles usuario1) ~?= True, --red social con varias publicaciones del usuario y mas de un seguidor fiel
     "testTieneUnSeguidorFiel 7" ~: (tieneUnSeguidorFiel redA usuario3) ~?= False --red social sin seguidor fiel
  ]
-
+ -------------- test tieneUnSeguidorFiel ------------------------
+ayuda = runTestTT testsuite10
+testsuite10 = test [
+    "test1"  ~: (existeSecuenciaDeAmigos redB usuario1 usuario3) ~?= True
+ ]
 
 expectAny actual expected = elem actual expected ~? ("expected any of: " ++ show expected ++ "\n but got: " ++ show actual)
 

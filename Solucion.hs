@@ -45,7 +45,7 @@ nombresDeUsuarios (us,rs,ps) = nombresDe us
 -- Recibe una lista (de usuarios) y extrae el nombre de cada usuario de esa secuencia con la funcion nombreDeUsuario para armar una lista con dichos nombres.
 nombresDe :: [Usuario] -> [String]
 nombresDe [] = []
-nombresDe (x:xs) = nombreDeUsuario x : nombresDeUsuariosAux xs
+nombresDe (x:xs) = nombreDeUsuario x : nombresDe xs
 
 -- Ejercicio 2.
 -- Toma una RedSocial y un Usuario, y devuelve la lista de usuarios que se relacionan (son amigos) con el primero.
@@ -135,22 +135,22 @@ esFiel (x:xs) n | leGustaLaPublicacionA x n == True = esFiel xs n
 -- Ejercicio 10.
 -- Recibe una red social y dos usuario y verifica si existe una cadena de amigos entre estos.
 existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
-existeSecuenciaDeAmigos rs us1 us2 = verificador rs us2 (amigosDe rs us1) []
+existeSecuenciaDeAmigos rs us1 us2 = verificador rs us2 (amigosDe rs us1) [us1]
 
 verificador :: RedSocial -> Usuario -> [Usuario] -> [Usuario] -> Bool
-verificador rs us2 [] lista = False
 verificador rs us2 as lista | pertenece us2 as = True
-                            | otherwise = verificador2 rs us2 as (lista++as) 
+                            | listaVerificada as lista == [] = False
+                            | otherwise = verificador rs us2 (amigosDeAmigos rs as) (lista ++ listaVerificada as lista)
 
-verificador2 :: RedSocial -> Usuario -> [Usuario] -> [Usuario] -> Bool
-verificador2 rs us2 [] lista = False
-verificador2 rs us2 as lista | listaVerificada (amigosDe rs (head(as))) lista /= [] = verificador rs us2 (listaVerificada (amigosDe rs (head(as))) lista) lista
-                             | listaVerificada (amigosDe rs (head(as))) lista == [] = verificador2 rs us2 (tail(as)) lista
+amigosDeAmigos :: RedSocial -> [Usuario] -> [Usuario]
+amigosDeAmigos _ [] = []
+amigosDeAmigos rs (x:xs) | xs == [] = amigosDe rs x
+                      | otherwise = (amigosDe rs x) ++ (amigosDeAmigos rs xs)
 
 pertenece :: Usuario -> [Usuario] -> Bool
 pertenece us [] = False
 pertenece us (x:xs) | x == us = True
-                     | otherwise = pertenece us xs
+                    | otherwise = pertenece us xs
 
 listaVerificada :: [Usuario] -> [Usuario] -> [Usuario]
 listaVerificada [] ys = []
