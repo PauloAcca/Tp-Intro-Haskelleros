@@ -38,21 +38,21 @@ likesDePublicacion (_, _, us) = us
 -- Ejercicios
 
 -- Ejercicio 1.
--- Recibe una red social y extrae el primer elemento de la tupla, que es una lista de usuarios y llama a la funcion auxiliar nombresDe.
+-- Recibe una red social y extrae el primer elemento de la tupla (una lista de usuarios), y extrae los nombres de dichos usuarios con la auxiliar "nombresDe".
 nombresDeUsuarios :: RedSocial -> [String]
 nombresDeUsuarios (us,rs,ps) = nombresDe us
 
--- Recibe una lista (de usuarios) y extrae el nombre de cada usuario de esa secuencia con la funcion nombreDeUsuario para armar una lista con dichos nombres.
+-- Recibe una lista (de usuarios) y extrae el nombre de cada usuario de esa secuencia con la funcion "nombreDeUsuario", para armar una lista con dichos nombres.
 nombresDe :: [Usuario] -> [String]
 nombresDe [] = []
 nombresDe (x:xs) = nombreDeUsuario x : nombresDe xs
 
 -- Ejercicio 2.
--- Toma una RedSocial y un Usuario, y devuelve la lista de usuarios que se relacionan (son amigos) con el primero.
+-- Toma una RedSocial y un Usuario, y devuelve la lista de usuarios que se relacionan (son amigos) con el usuario dado, utilizando la auxiliar "amigos".
 amigosDe :: RedSocial -> Usuario -> [Usuario]
 amigosDe (us, rs, ps) n = amigos (relaciones(us, rs, ps)) n
 
--- Toma las relaciones de la RedSocial y chequea quienes son los amigos del usuario dado.
+-- Recibe las relaciones de la RedSocial junto a un usuario, y chequea quienes son los amigos del usuario dado.
 amigos :: [Relacion] -> Usuario -> [Usuario]
 amigos [] nm = []
 amigos (x:xs) n | n == fst x = snd x : amigos xs n
@@ -60,7 +60,7 @@ amigos (x:xs) n | n == fst x = snd x : amigos xs n
                 | otherwise = amigos xs n
 
 -- Ejercicio 3.
--- Toma una red social y un usuario, extrae los amigos del usuario con amigosDe, llama a la auxiliar.
+-- Toma una red social y un usuario, extrae los amigos del usuario con "amigosDe" y devuelve la cantidad de amigos, para ello llama a la auxiliar "contadorDeAmigos".
 cantidadDeAmigos :: RedSocial -> Usuario -> Int
 cantidadDeAmigos (us, rs, ps) n = contadorDeAmigos (amigosDe (us, rs, ps) n)
 
@@ -71,21 +71,21 @@ contadorDeAmigos (x:xs) | xs == [] = 1
                         | otherwise = contadorDeAmigos xs + 1
 
 -- Ejercicio 4.
--- Toma una red social y compara la cantidad de relaciones/amigos de cada usuario para devolver el usuario con mayor cantidad.
+-- Toma una red social y compara la cantidad de relaciones/amigos de cada usuario para devolver el usuario con mayor cantidad de amigos.
 usuarioConMasAmigos :: RedSocial -> Usuario
 usuarioConMasAmigos ((x:xs), rs, ps) | xs == [] = x
                                      | cantidadDeAmigos ((x:xs), rs, ps) x >= cantidadDeAmigos ((x:xs), rs, ps) (head(xs)) = usuarioConMasAmigos ((x : tail(xs)), rs, ps)
                                      | otherwise = usuarioConMasAmigos (xs, rs, ps)
 
 -- Ejercicio 5.
--- Toma una red social y revisa si algun usuario tiene mas de 1000000 de amigos (en este caso lo hicimos con 10 amigos).
+-- Toma una red social y revisa si algun usuario tiene mas de 1000000 de amigos (en este caso lo hicimos con 10 amigos), si es verdadero devuelve True, sino False.
 estaRobertoCarlos :: RedSocial -> Bool
 estaRobertoCarlos ([], _, _) = False
 estaRobertoCarlos ((x:xs), rs, ps) | (cantidadDeAmigos ((x:xs), rs, ps) x) > 10 = True
                                    | otherwise = estaRobertoCarlos (xs, rs, ps)
 
 -- Ejercicio 6.
--- Dada una red social y un usuario, extrae las publicaciones de la red social y se lo manda a la auxiliar junto al usuario
+-- Dada una red social y un usuario, y devuelve todas las publicaciones de dicho usuario, para ello usa la auxiliar "publicacionesDelUsuario"
 publicacionesDe :: RedSocial -> Usuario -> [Publicacion]
 publicacionesDe rd n = publicacionesDelUsuario (publicaciones(rd)) n
 
@@ -96,7 +96,7 @@ publicacionesDelUsuario (x:xs) n | usuarioDePublicacion x == n = x : publicacion
                                  | otherwise = publicacionesDelUsuario xs n
 
 -- Ejercicio 7.
--- Recibe una red social y un usuario para armar una lista con las publicaciones que le gustan a dicho usuario. Para ello utiliza la auxiliar leGustaLaPublicacionA.
+-- Recibe una red social y un usuario para armar una lista con las publicaciones que le gustan a dicho usuario. Para ello utiliza la auxiliar "leGustaLaPublicacionA".
 publicacionesQueLeGustanA :: RedSocial -> Usuario -> [Publicacion]
 publicacionesQueLeGustanA (_, _, []) n = []
 publicacionesQueLeGustanA (us, rs, (x:xs)) n | leGustaLaPublicacionA x n == True = x : publicacionesQueLeGustanA (us, rs, xs) n
@@ -114,30 +114,29 @@ lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
 lesGustanLasMismasPublicaciones rs us1 us2 = publicacionesQueLeGustanA rs us1 == publicacionesQueLeGustanA rs us2
 
 -- Ejercicio 9.
--- Recibe una red social y un usuario, devuelve True si existe otro usuario que le haya dado like a todas las publicacion del primero.
--- Para ello extremos las publicaciones del usuario y los likes de la primera publicacion y los pasamos a usuariosFieles.
+-- Recibe una red social y un usuario, devuelve True si existe otro usuario que le haya dado like a todas las publicacion del primero. Para ello llamamos a "usuariosFieles"
 tieneUnSeguidorFiel :: RedSocial -> Usuario -> Bool
 tieneUnSeguidorFiel (_,_,[]) _ = False
 tieneUnSeguidorFiel rs a = usuariosFieles (publicacionesDe rs a) (likesDePublicacion (head(publicacionesDe rs a)))
 
--- Dados una lista de publicaciones y una lista de usuarios(los likes), chequea si alguno de esos usuarios cumple la funcion esFiel.
+-- Dados una lista de publicaciones (del usuario dado) y una lista de usuarios (los likes), chequea si alguno de esos usuarios cumple la funcion "esFiel".
 usuariosFieles :: [Publicacion] -> [Usuario] -> Bool
 usuariosFieles pbs [] = False
 usuariosFieles pbs likes | esFiel pbs (head(likes)) == True = True
                          | otherwise = usuariosFieles pbs (tail(likes))
 
--- Dada una lista de publicaciones y un usuario, devuelve True si ese usuario le dio like a todas las publicaciones de la lista.
+-- Dada una lista de publicaciones (del usuario dado) y un usuario (de la lista de likes), devuelve True si ese usuario le dio like a todas las publicaciones de la lista.
 esFiel :: [Publicacion] -> Usuario -> Bool
 esFiel [] n = True
 esFiel (x:xs) n | leGustaLaPublicacionA x n == True = esFiel xs n
                 | leGustaLaPublicacionA x n == False = False
 
 -- Ejercicio 10.
--- Recibe una red social y dos usuario y verifica si existe una cadena de amigos entre estos.
+-- Recibe una red social y dos usuario y verifica si existe una cadena de amigos entre estos. Si es verdad devuelve True, sino False. Para ello llama a la funcion "verificador".
 existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
 existeSecuenciaDeAmigos rs us1 us2 = verificador rs us2 (amigosDe rs us1) [us1]
 
--- Dado un usario y una lista de usuarios, primero chequea si el usuario pertenece a la lista o si la lista de amigos es vacia (implicando que ya fue chequeada), sino llama a las auxiliares para probbar con los amigos de amigos.
+-- Dado un usario (de los dos dados originales) y una lista de usuarios (lista de amigos), primero chequea si el usuario pertenece a la lista o si la lista de amigos ya chequeados previemente es vacia (implicando que ya fue chequeada), sino llama a las auxiliares para probar con los amigos de amigos.
 verificador :: RedSocial -> Usuario -> [Usuario] -> [Usuario] -> Bool
 verificador rs us2 as lista | pertenece us2 as = True
                             | listaVerificada as lista == [] = False

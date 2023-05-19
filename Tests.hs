@@ -9,7 +9,7 @@ todosLosTest = test [testsuite1, testsuite2, testsuite3, testsuite4, testsuite5,
 -------------- test nombres de usuarios ------------------------
 testsuite1 = test [
     "testnombresUsuarios 1" ~: (nombresDeUsuarios redSocialVacia) ~?= [], --red social vacía
-    "testnombresUsuarios 2" ~: (nombresDeUsuarios redSocialUnUsuario) ~?= ["Juan"], --red social un usuario
+    "testnombresUsuarios 2" ~: (nombresDeUsuarios redSocialUnUsuario) ~?= ["Juan"], --red social un usuario (aclaramos que en casos como este, las relaciones y las publicaciones de la red no tienen importancia por lo que las dejamos vacias)
     "testnombresUsuarios 3" ~: (nombresDeUsuarios redA) ~?= ["Juan", "Natalia", "Pedro", "Mariela"] --red social varios usuarios
  ]
 
@@ -23,8 +23,8 @@ testsuite2 = test [
 -------------- test CantidadDeAmigos ------------------------
 testsuite3 = test [
     "testCantidadDeAmigos 1" ~: (cantidadDeAmigos redSocialVacia usuario1) ~?= 0, --red social sin usuarios
-    "testCantidadDeAmigos 2" ~: (cantidadDeAmigos redB usuario5) ~?= 0, --red social sin amigos de
-    "testCantidadDeAmigos 3" ~: (cantidadDeAmigos redA usuario1) ~?= 2 --red social con amigos de
+    "testCantidadDeAmigos 2" ~: (cantidadDeAmigos redB usuario5) ~?= 0, --red social sin amigos del usuario
+    "testCantidadDeAmigos 3" ~: (cantidadDeAmigos redA usuario1) ~?= 2 --red social con amigos del usuario
  ]
 
  -------------- test usuarioConMasAmigos ------------------------
@@ -45,8 +45,9 @@ testsuite5 = test [
  -------------- test PublicacionesDe ------------------------
 testsuite6 = test [
     "testPublicacionesDe 1" ~: (publicacionesDe redSinPublicaciones  usuario2) ~?= [], --red social sin publicaciones
-    "testPublicacionesDe 2" ~: (publicacionesDe redUnaPublicacionDeUsuario  usuario3) ~?= [publicacion3_1], --red social con una sola publicacion del usuario
-    "testPublicacionesDe 3" ~: (publicacionesDe redA usuario1) ~?= [publicacion1_1, publicacion1_2] --red social con muchas publicaciones del usuario
+    "testPublicacionesDe 2" ~: (publicacionesDe redB usuario5) ~?= [], --red social sin ninguna publicacion del usuario
+    "testPublicacionesDe 3" ~: (publicacionesDe redUnaPublicacionDeUsuario  usuario3) ~?= [publicacion3_1], --red social con una sola publicacion del usuario
+    "testPublicacionesDe 4" ~: (publicacionesDe redA usuario1) ~?= [publicacion1_1, publicacion1_2] --red social con muchas publicaciones del usuario
  ]
 
  -------------- test PublicacionesQueLeGustanA ------------------------
@@ -58,8 +59,8 @@ testsuite7 = test [
  ]
  -------------- test lesGustanLasMismasPublicaciones ------------------------
 testsuite8 = test [
-    "testLesGustanLasMismasPublicaciones 1" ~: (lesGustanLasMismasPublicaciones redSinPublicaciones  usuario2 usuario1) ~?= True, --red social sin publicaciones
-    "testLesGustanLasMismasPublicaciones 2" ~: (lesGustanLasMismasPublicaciones redB  usuario1 usuario3) ~?= True, --red social sin publicaciones que le gusten a los usuarios
+    "testLesGustanLasMismasPublicaciones 1" ~: (lesGustanLasMismasPublicaciones redSinPublicaciones usuario2 usuario1) ~?= True, --red social sin publicaciones
+    "testLesGustanLasMismasPublicaciones 2" ~: (lesGustanLasMismasPublicaciones redB usuario1 usuario3) ~?= True, --red social sin publicaciones que le gusten a los usuarios
     "testLesGustanLasMismasPublicaciones 3" ~: (lesGustanLasMismasPublicaciones redMismaCantPublicacionesLikeadasUnaSola usuario2 usuario4) ~?= True, --red social con una sola publicacion que le guste a ambos usuarios
     "testLesGustanLasMismasPublicaciones 4" ~: (lesGustanLasMismasPublicaciones redMismaCantPublicacionesLikeadas usuario2 usuario5) ~?= True, --red social con varias publicaciones que le gusten a ambos usuarios
     "testLesGustanLasMismasPublicaciones 5" ~: (lesGustanLasMismasPublicaciones redA usuario4 usuario2) ~?= False, --red social que le gusten mas publicacion al primer usuario
